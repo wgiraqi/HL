@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#09291d">
+<title>لوحة إدارة مركز أمان</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{--green:#0b3324;--green2:#145a3f;--green3:#e7f2eb;--gold:#d4a438;--ink:#17352a;--muted:#718078;--line:#e5ece7;--bg:#f4f7f5;--white:#fff;--red:#b42318;--shadow:0 14px 40px rgba(12,48,33,.08)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:'Tajawal',sans-serif}button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.login-screen{min-height:100vh;display:grid;place-items:center;padding:22px;background:radial-gradient(circle at 15% 15%,#1b735133,transparent 28%),radial-gradient(circle at 85% 85%,#d4a43822,transparent 30%),linear-gradient(135deg,#051811,#0b3324 60%,#13533a)}
+.login-card{width:min(100%,430px);background:#fffffffa;border:1px solid #d4a43866;border-radius:28px;padding:34px;box-shadow:0 28px 80px #0004;text-align:center}.logo{width:86px;height:86px;border-radius:25px;object-fit:contain;background:#e7f2eb;padding:9px;border:1px solid #d4a43866}.logo-fallback{width:86px;height:86px;margin:auto;border-radius:25px;background:var(--green);color:#f4d88d;display:grid;place-items:center;font-size:30px;font-weight:900;border:2px solid var(--gold)}.eyebrow{display:inline-flex;gap:8px;align-items:center;background:var(--green3);color:var(--green);border:1px solid #145a3f22;border-radius:30px;padding:7px 13px;font-size:12px;font-weight:800;margin:18px 0 8px}.dot{width:7px;height:7px;border-radius:50%;background:#23945d}.login-card h1{font-size:27px;margin:6px 0;color:var(--green)}.sub{color:var(--muted);font-size:14px;line-height:1.8;margin:8px 0 25px}
+.field{text-align:right;margin:15px 0}.field label{display:block;font-size:13px;font-weight:800;margin:0 0 8px}.field input,.field select{width:100%;padding:13px 14px;border:1px solid #dce6df;border-radius:13px;background:#fbfdfb;outline:none;color:var(--ink)}.field input:focus,.field select:focus{border-color:var(--green2);box-shadow:0 0 0 3px #145a3f18}
+.btn{border:0;border-radius:12px;padding:11px 17px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.2s}.btn:hover{transform:translateY(-1px);filter:brightness(1.04)}.primary{background:var(--green2);color:white}.gold{background:#f6edda;color:#785510;border:1px solid #e8d6a8}.outline{background:white;color:var(--green);border:1px solid #cbd9d0}.danger{background:#fff0ee;color:var(--red);border:1px solid #f3d0cc}.wide{width:100%;padding:14px}.error{color:var(--red);font-size:13px;margin-top:12px;min-height:20px}.hint{font-size:11px;color:#8a968f;margin-top:15px}
+.app{min-height:100vh}.topbar{background:linear-gradient(105deg,#061c14,#0b3324 65%,#145a3f);color:#fff;padding:17px clamp(16px,4vw,48px);display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 5px 22px #082b1c22}.brand{display:flex;align-items:center;gap:13px}.brand .logo,.brand .logo-fallback{width:48px;height:48px;border-radius:14px;font-size:19px}.brand-title{font-weight:900;font-size:19px}.brand-sub{font-size:11px;color:#c4d7ca;margin-top:2px}.top-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.topbar .outline{background:#ffffff12;color:white;border-color:#ffffff44}.topbar .gold{background:#d4a438;color:#1d2d22;border:0}
+.container{width:min(1400px,100%);margin:auto;padding:28px clamp(14px,3vw,38px) 55px}.welcome{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:23px}.welcome h2{font-size:26px;margin:0;color:var(--green)}.welcome p{margin:6px 0 0;color:var(--muted);font-size:14px}.refresh-meta{font-size:12px;color:var(--muted);margin-top:8px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:25px}.stat{background:white;border:1px solid var(--line);border-radius:19px;padding:19px;box-shadow:0 4px 18px #0b33240a;position:relative;overflow:hidden}.stat:after{content:"";position:absolute;left:-18px;bottom:-28px;width:90px;height:90px;border-radius:50%;background:#e7f2eb}.stat-label{color:var(--muted);font-size:13px;font-weight:700}.stat-value{font-size:30px;font-weight:900;color:var(--green);margin-top:8px;position:relative;z-index:1}.stat-icon{float:left;color:#b58a2e;font-size:21px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:26px 0 14px}.section-head h3{margin:0;font-size:19px;color:var(--green)}.section-head small{color:var(--muted)}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.search{min-width:220px;flex:1;max-width:360px;border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff;outline:none}
+.groups{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.group-card{background:white;border:1px solid var(--line);border-radius:19px;padding:19px;box-shadow:0 5px 18px #0b33240a;transition:.2s}.group-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#b9d2c2}.group-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.group-name{font-size:16px;font-weight:900;line-height:1.6;color:var(--green)}.count-pill{white-space:nowrap;background:var(--green3);color:var(--green2);padding:6px 10px;border-radius:30px;font-size:12px;font-weight:900}.group-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:19px;padding-top:14px;border-top:1px solid #edf1ee}.group-foot span{font-size:12px;color:var(--muted)}
+.panel{background:white;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 5px 20px #0b332408;margin-top:18px}.export-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.export-btn{background:#f7faf8;border:1px solid #e1ebe4;color:var(--green);border-radius:13px;padding:13px 10px;font-weight:800;text-align:center}.export-btn:hover{background:var(--green3);border-color:#b9d2c2}.export-btn small{display:block;font-size:10px;color:var(--muted);font-weight:500;margin-top:4px}
+.page-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}.page-head h2{margin:0;color:var(--green);font-size:23px}.page-head p{margin:4px 0;color:var(--muted);font-size:13px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:15px;margin-top:16px}table{border-collapse:collapse;width:100%;min-width:1050px;background:white}th{background:#eff6f1;color:var(--green);font-size:12px;text-align:right;padding:13px 12px;white-space:nowrap}td{padding:12px;border-top:1px solid #edf1ee;font-size:12px;vertical-align:top}tr:hover td{background:#fbfdfb}.muted{color:var(--muted)}.tag{display:inline-block;padding:5px 9px;border-radius:20px;background:#e7f2eb;color:#145a3f;font-size:11px;font-weight:800}
+.custom-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-top:16px}.notice{padding:12px 14px;border-radius:12px;background:#f7faf8;color:#52645a;font-size:12px;line-height:1.8;margin-top:12px;border:1px solid var(--line)}
+.toast{position:fixed;bottom:22px;left:22px;z-index:20;background:#0b3324;color:white;padding:13px 18px;border-radius:13px;box-shadow:var(--shadow);font-size:13px;max-width:min(90vw,420px)}.toast.bad{background:#9f241c}
+.loading{opacity:.65;pointer-events:none}.empty{padding:35px;text-align:center;color:var(--muted);background:white;border:1px dashed #cbd9d0;border-radius:17px}.spinner{width:16px;height:16px;border:2px solid #ffffff66;border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.footer{text-align:center;color:#95a39a;font-size:11px;margin-top:35px}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.groups{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.topbar{align-items:flex-start}.brand-title{font-size:16px}.top-actions .btn{padding:9px 10px;font-size:11px}.container{padding-top:20px}.welcome{align-items:flex-start;flex-direction:column}.welcome h2{font-size:22px}.stats{gap:9px}.stat{padding:14px}.stat-value{font-size:25px}.groups{grid-template-columns:1fr}.export-grid{grid-template-columns:repeat(2,1fr)}.custom-row{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column}.search{max-width:none;width:100%}.login-card{padding:27px 22px}}
+</style>
+</head>
+<body>
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <img src="logo.png" class="logo" alt="شعار مركز أمان" onerror="this.style.display='none';document.getElementById('loginFallback').classList.remove('hidden')">
+    <div id="loginFallback" class="logo-fallback hidden">أمان</div>
+    <div class="eyebrow"><span class="dot"></span> مركز أمان · بوابة المشرفين</div>
+    <h1>لوحة التحكم الإدارية</h1>
+    <p class="sub">إدارة بيانات المشاركين ومتابعة المجموعات وتنزيل التقارير من مكان واحد.</p>
+    <form id="loginForm">
+      <div class="field"><label for="password">رمز الدخول الإداري</label><input id="password" type="password" autocomplete="current-password" placeholder="أدخل كلمة المرور" required></div>
+      <button id="loginBtn" class="btn primary wide" type="submit">تسجيل الدخول الآمن <span>←</span></button>
+      <div id="loginError" class="error"></div>
+    </form>
+    <div class="hint">اتصال محمي بقاعدة بيانات مركز أمان عبر جسر Apps Script</div>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+  <header class="topbar">
+    <div class="brand">
+      <img src="logo.png" class="logo" alt="شعار" onerror="this.style.display='none';document.getElementById('brandFallback').classList.remove('hidden')">
+      <div id="brandFallback" class="logo-fallback hidden">أ</div>
+      <div><div class="brand-title">مركز أمان</div><div class="brand-sub">لوحة إدارة بيانات المشاركين</div></div>
+    </div>
+    <div class="top-actions">
+      <button class="btn outline" id="refreshBtn">↻ تحديث البيانات</button>
+      <button class="btn gold" id="logoutBtn">تسجيل الخروج</button>
+    </div>
+  </header>
+  <main class="container">
+    <section id="dashboardPage">
+      <div class="welcome">
+        <div><h2>مرحباً بك في لوحة الإدارة</h2><p>نظرة شاملة على التسجيلات والمجموعات المسجلة في مركز أمان.</p><div class="refresh-meta" id="lastRefresh">لم يتم تحديث البيانات بعد</div></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="stat-icon">▤</span><div class="stat-label">إجمالي المشاركين</div><div class="stat-value" id="totalCount">—</div></div>
+        <div class="stat"><span class="stat-icon">◫</span><div class="stat-label">عدد المجموعات</div><div class="stat-value" id="groupsCount">—</div></div>
+        <div class="stat"><span class="stat-icon">◷</span><div class="stat-label">بانتظار المراجعة</div><div class="stat-value" id="pendingCount">—</div></div>
+        <div class="stat"><span class="stat-icon">⌚</span><div class="stat-label">أحدث تسجيل</div><div class="stat-value" id="latestDate" style="font-size:17px;margin-top:13px">—</div><div class="muted" id="latestTime" style="font-size:12px"></div></div>
+      </div>
+      <div class="section-head"><div><h3>المجموعات المسجلة</h3><small>تُجلب المجموعات تلقائياً من قاعدة البيانات</small></div><div class="toolbar"><input id="groupSearch" class="search" placeholder="ابحث عن مجموعة..."></div></div>
+      <div id="groupsGrid" class="groups"><div class="empty">اضغط «تحديث البيانات» لجلب المجموعات.</div></div>
+      <section class="panel">
+        <div class="section-head" style="margin-top:0"><div><h3>تنزيل بيانات جميع المجموعات</h3><small>ملف Excel واحد يتضمن ورقة إجمالية وورقة لكل مجموعة</small></div></div>
+        <div class="export-grid" id="allExportButtons"></div>
+        <div class="custom-row">
+          <div class="field"><label>من تاريخ</label><input type="date" id="allStart"></div>
+          <div class="field"><label>إلى تاريخ</label><input type="date" id="allEnd"></div>
+          <button class="btn primary" id="allCustomBtn">تنزيل الفترة المحددة</button>
+        </div>
+        <div class="notice">تُحسب الفترات السريعة رجوعاً من تاريخ ووقت أحدث تسجيل فعلي في قاعدة البيانات، وليس من وقت فتح لوحة التحكم. المنطقة الزمنية المعتمدة: بغداد.</div>
+      </section>
+    </section>
+
+    <section id="groupPage" class="hidden">
+      <div class="page-head"><button class="btn outline" id="backBtn">→ رجوع</button><div><h2 id="groupTitle">تفاصيل المجموعة</h2><p id="groupSubtitle"></p></div></div>
+      <div class="panel">
+        <div class="toolbar"><input id="participantSearch" class="search" placeholder="ابحث بالاسم أو المهارات..."><input id="phoneSearch" class="search" placeholder="ابحث برقم الهاتف..."><select id="govFilter" class="search"><option value="">كل المحافظات</option></select></div>
+        <div class="table-wrap"><table><thead><tr><th>التسلسل</th><th>الاسم الكامل</th><th>المحافظة</th><th>القضاء</th><th>المنطقة</th><th>التحصيل الدراسي</th><th>العمر</th><th>المهارات والخبرات</th><th>رقم الهاتف</th><th>اسم المجموعة</th><th>تاريخ التسجيل</th><th>وقت التسجيل</th></tr></thead><tbody id="participantsBody"></tbody></table></div>
+        <div id="tableCount" class="refresh-meta"></div>
+      </div>
+      <section class="panel">
+        <div class="section-head" style="margin-top:0"><div><h3>تصدير بيانات هذه المجموعة</h3><small>اختر الفترة المطلوبة لتنزيل ملف Excel</small></div></div>
+        <div class="export-grid" id="groupExportButtons"></div>
+        <div class="custom-row">
+          <div class="field"><label>من تاريخ</label><input type="date" id="groupStart"></div>
+          <div class="field"><label>إلى تاريخ</label><input type="date" id="groupEnd"></div>
+          <button class="btn primary" id="groupCustomBtn">تنزيل الفترة المحددة</button>
+        </div>
+      </section>
+    </section>
+    <div class="footer">مركز أمان للفكر والمعرفة · نظام الإدارة الداخلي</div>
+  </main>
+</div>
+<div id="toast" class="toast hidden"></div>
+
+<script>
+(() => {
+'use strict';
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNG1XD-Zbbpr9WwhKywlQvV0ayJNIcdit8YVg7RipKR9H8nDGMZ7DAOQQhAqmmiNrdgw/exec';
+const SESSION_KEY='aman_admin_session_v2', URL_KEY='aman_admin_script_url_v2';
+const PERIODS=[
+ ['day','آخر 24 ساعة','24 ساعة سابقة لأحدث تسجيل'],
+ ['week','آخر 7 أيام','7 أيام سابقة لأحدث تسجيل'],
+ ['twoWeeks','آخر 14 يومًا','14 يوماً سابقة لأحدث تسجيل'],
+ ['month','آخر 30 يومًا','30 يوماً سابقة لأحدث تسجيل'],
+ ['year','آخر 365 يومًا','365 يوماً سابقة لأحدث تسجيل'],
+ ['all','جميع السجلات','كافة التسجيلات دون استثناء']
+];
+let session=null, dashboard=null, currentGroup=null, groupRecords=[];
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg,bad=false){const el=$('toast');el.textContent=msg;el.classList.toggle('bad',bad);el.classList.remove('hidden');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.add('hidden'),4000)}
+function fmtNow(){return new Intl.DateTimeFormat('ar-IQ',{timeZone:'Asia/Baghdad',dateStyle:'medium',timeStyle:'short'}).format(new Date())}
+function getSession(){try{const s=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');if(s&&s.token&&s.expiresAt>Date.now())return s}catch{}localStorage.removeItem(SESSION_KEY);return null}
+function setBusy(btn,busy,label){if(!btn)return;btn.disabled=busy;if(busy){btn.dataset.old=btn.innerHTML;btn.innerHTML='<span class="spinner"></span> جارٍ التنفيذ'}else if(btn.dataset.old){btn.innerHTML=btn.dataset.old;delete btn.dataset.old}}
+const bridgeFrame = document.createElement('iframe');
+bridgeFrame.id = 'adminBridgeFrame';
+bridgeFrame.title = 'اتصال آمن بقاعدة بيانات مركز أمان';
+bridgeFrame.setAttribute('aria-hidden', 'true');
+bridgeFrame.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;left:-10px;bottom:-10px;border:0';
+const bridgeReady = new Promise((resolve,reject) => {
+ bridgeFrame.addEventListener('load',resolve,{once:true});
+ bridgeFrame.addEventListener('error',()=>reject(new Error('تعذر تحميل جسر الاتصال.')),{once:true});
+});
+bridgeFrame.src = (localStorage.getItem(URL_KEY) || DEFAULT_SCRIPT_URL) + '?bridge=1';
+document.body.appendChild(bridgeFrame);
+
+const pendingBridgeRequests = new Map();
+let bridgeRequestCounter = 0;
+window.addEventListener('message', event => {
+ if (event.source !== bridgeFrame.contentWindow) return;
+ const message = event.data;
+ if (!message || message.type !== 'AMAN_ADMIN_RESPONSE' || !message.requestId) return;
+ const pending = pendingBridgeRequests.get(message.requestId);
+ if (!pending) return;
+ clearTimeout(pending.timer);
+ pendingBridgeRequests.delete(message.requestId);
+ if (message.error) pending.reject(new Error(message.error));
+ else if (message.result && message.result.success === false)
+  pending.reject(new Error(message.result.message || 'رفض الخادم الطلب.'));
+ else pending.resolve(message.result);
+});
+
+function api(action,extra={}) {
+ return new Promise((resolve,reject) => {
+  if (!bridgeFrame.contentWindow) {
+   reject(new Error('تعذر إنشاء اتصال بقاعدة البيانات. أعد تحميل الصفحة.'));
+   return;
+  }
+  const requestId = 'aman-' + Date.now() + '-' + (++bridgeRequestCounter);
+  const timer = setTimeout(() => {
+   pendingBridgeRequests.delete(requestId);
+   reject(new Error('انتهت مهلة الاتصال. تحقق من نشر الجسر وإعداد عنوان موقع الإدارة المسموح.'));
+  }, 30000);
+  pendingBridgeRequests.set(requestId,{resolve,reject,timer});
+  bridgeReady.then(() => {
+   if (!pendingBridgeRequests.has(requestId)) return;
+   try {
+    bridgeFrame.contentWindow.postMessage({
+     type:'AMAN_ADMIN_REQUEST',
+     requestId,
+     payload:{action,...extra}
+    }, '*');
+   } catch(error) {
+    clearTimeout(timer);
+    pendingBridgeRequests.delete(requestId);
+    reject(new Error('تعذر إرسال الطلب إلى جسر الاتصال.'));
+   }
+  }).catch(error => {
+   clearTimeout(timer);
+   pendingBridgeRequests.delete(requestId);
+   reject(error);
+  });
+ });
+}
+function requireSession(){if(!session||session.expiresAt<=Date.now()){logoutLocal();throw new Error('انتهت جلسة الدخول. يرجى تسجيل الدخول مجدداً.')} }
+async function login(password){
+ const data=await api('admin.login',{password});
+ if(!data.success||!data.token)throw new Error(data.message||'رمز الدخول غير صحيح.');
+ session={token:data.token,issuedAt:Date.now(),expiresAt:Number(data.expiresAt)||Date.now()+30*86400000};
+ localStorage.setItem(SESSION_KEY,JSON.stringify(session));showApp();await refreshDashboard();
+}
+function logoutLocal(){session=null;localStorage.removeItem(SESSION_KEY);$('app').classList.add('hidden');$('loginScreen').classList.remove('hidden');$('password').value=''}
+async function logout(){try{if(session)await api('admin.logout',{token:session.token})}catch{}logoutLocal();toast('تم تسجيل الخروج.')}
+function showApp(){$('loginScreen').classList.add('hidden');$('app').classList.remove('hidden')}
+async function refreshDashboard(){
+ requireSession();const btn=$('refreshBtn');setBusy(btn,true);
+ try{
+  const data=await api('admin.dashboard',{token:session.token});
+  dashboard=data;$('totalCount').textContent=Number(data.totalRegistrations||0).toLocaleString('ar-IQ');
+  $('groupsCount').textContent=(data.groups||[]).length.toLocaleString('ar-IQ');
+  $('pendingCount').textContent=Number(data.pendingReviews||0).toLocaleString('ar-IQ');
+  $('latestDate').textContent=data.latestRegistration?.date||'لا يوجد';$('latestTime').textContent=data.latestRegistration?.time||'';
+  $('lastRefresh').textContent='آخر تحديث للوحة: '+fmtNow();
+  renderGroups();renderExportButtons('allExportButtons','');
+ }catch(e){toast(e.message,true);if(/جلسة|دخول|صلاحية/.test(e.message))logoutLocal()}
+ finally{setBusy(btn,false)}
+}
+function renderGroups(){
+ const q=$('groupSearch').value.trim().toLowerCase();
+ const groups=(dashboard?.groups||[]).filter(g=>String(g.name||'').toLowerCase().includes(q));
+ $('groupsGrid').innerHTML=groups.length?groups.map(g=>`<article class="group-card"><div class="group-top"><div class="group-name">${esc(g.name)}</div><span class="count-pill">${Number(g.count||0)} مشارك</span></div><div class="group-foot"><span>الحالة: ${esc(g.status||'—')}</span><button class="btn primary" data-open="${esc(g.name)}">عرض التفاصيل ←</button></div></article>`).join(''):'<div class="empty">لا توجد مجموعات مطابقة لبحثك.</div>';
+ $('groupsGrid').querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>openGroup(b.dataset.open)));
+}
+function dateVal(s){const m=String(s||'').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(!m)return null;return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`}
+function val(r,...keys){for(const k of keys){if(r&&r[k]!==undefined&&r[k]!==null)return r[k]}return ''}
+function renderParticipants(){
+ const q=$('participantSearch').value.trim().toLowerCase(),p=$('phoneSearch').value.trim(),gov=$('govFilter').value;
+ const list=groupRecords.filter(r=>{
+  const name=String(val(r,'الاسم الكامل')).toLowerCase(),skills=String(val(r,'المهارات والخبرات')).toLowerCase(),phone=String(val(r,'رقم الهاتف'));
+  return (!q||name.includes(q)||skills.includes(q))&&(!p||phone.includes(p))&&(!gov||val(r,'المحافظة')===gov);
+ });
+ $('participantsBody').innerHTML=list.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(val(r,'الاسم الكامل'))}</b></td><td>${esc(val(r,'المحافظة'))}</td><td>${esc(val(r,'القضاء'))}</td><td>${esc(val(r,'المنطقة'))}</td><td>${esc(val(r,'التحصيل الدراسي'))}</td><td>${esc(val(r,'العمر'))}</td><td>${esc(val(r,'المهارات والخبرات'))}</td><td dir="ltr">${esc(val(r,'رقم الهاتف'))}</td><td>${esc(val(r,'اسم المجموعة'))}</td><td>${esc(val(r,'تاريخ التسجيل'))}</td><td>${esc(val(r,'وقت التسجيل'))}</td></tr>`).join('')||'<tr><td colspan="12" class="muted" style="text-align:center;padding:28px">لا توجد سجلات مطابقة.</td></tr>';
+ $('tableCount').textContent=`عرض ${list.length} من أصل ${groupRecords.length} مشارك`;
+}
+async function openGroup(name){
+ requireSession();$('dashboardPage').classList.add('hidden');$('groupPage').classList.remove('hidden');$('groupTitle').textContent=name;$('groupSubtitle').textContent='جارٍ تحميل بيانات المشاركين...';currentGroup=name;
+ try{
+  const data=await api('admin.group',{token:session.token,groupName:name});
+  groupRecords=data.registrations||[];$('groupSubtitle').textContent=`${data.count??groupRecords.length} مشارك في هذه المجموعة`;
+  const govs=[...new Set(groupRecords.map(r=>val(r,'المحافظة')).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ar'));
+  $('govFilter').innerHTML='<option value="">كل المحافظات</option>'+govs.map(g=>`<option value="${esc(g)}">${esc(g)}</option>`).join('');
+  renderParticipants();renderExportButtons('groupExportButtons',name);
+ }catch(e){toast(e.message,true);$('groupSubtitle').textContent='تعذر تحميل بيانات المجموعة.'}
+}
+function renderExportButtons(containerId,groupName){
+ $(containerId).innerHTML=PERIODS.map(([key,label,desc])=>`<button class="export-btn" data-period="${key}">${label}<small>${desc}</small></button>`).join('');
+ $(containerId).querySelectorAll('[data-period]').forEach(b=>b.addEventListener('click',()=>downloadExcel(groupName,b.dataset.period)));
+}
+async function downloadExcel(groupName,period,startDate='',endDate=''){
+ requireSession();const btn=null;
+ try{
+  const data=await api('admin.exportData',{token:session.token,groupName:groupName||'',period,startDate,endDate});
+  if(!data.headers||!window.XLSX)throw new Error('مكتبة Excel غير متاحة. تحقق من اتصال الإنترنت.');
+  const rows=[data.headers,...(data.rows||[])];
+  const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=data.headers.map((h,i)=>({wch:[28,20,18,20,20,30,12,22,18,18,18,16][i]||18}));ws['!views']=[{rightToLeft:true}];
+  const wb=XLSX.utils.book_new();wb.Workbook={Views:[{RTL:true}]};
+  if(groupName){XLSX.utils.book_append_sheet(wb,ws,safeSheet(groupName))}
+  else{
+   XLSX.utils.book_append_sheet(wb,ws,'جميع المشاركين');
+   const groupMap=new Map();
+   (data.rows||[]).forEach(row=>{const g=String(row[9]||'غير مصنف');if(!groupMap.has(g))groupMap.set(g,[]);groupMap.get(g).push(row)});
+   for(const [g,items] of groupMap){const sh=XLSX.utils.aoa_to_sheet([data.headers,...items]);sh['!views']=[{rightToLeft:true}];sh['!cols']=ws['!cols'];XLSX.utils.book_append_sheet(wb,sh,safeSheet(g,wb.SheetNames))}
+  }
+  const filename=(data.filename||'مركز_أمان_التسجيلات')+'.xlsx';XLSX.writeFile(wb,filename,{compression:true});toast(`تم تجهيز الملف: ${data.count??(data.rows||[]).length} سجل.`);
+ }catch(e){toast(e.message,true);if(/جلسة|دخول|صلاحية/.test(e.message))logoutLocal()}
+ finally{setBusy(btn,false)}
+}
+function safeSheet(name,used=[]){let s=String(name||'مجموعة').replace(/[\\/?*[\]:]/g,' ').trim().slice(0,26)||'مجموعة',base=s,n=2;while(used.includes(s)){s=base.slice(0,25)+' '+n++}return s}
+function customDownload(group){
+ const prefix=group?'group':'all',start=$(prefix+'Start').value,end=$(prefix+'End').value;
+ if(!start||!end){toast('حدد تاريخ البداية والنهاية أولاً.',true);return}
+ if(start>end){toast('تاريخ البداية يجب أن يسبق تاريخ النهاية.',true);return}
+ downloadExcel(group,'custom',start,end);
+}
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();const btn=$('loginBtn');$('loginError').textContent='';setBusy(btn,true);try{await login($('password').value)}catch(err){$('loginError').textContent=err.message}finally{setBusy(btn,false)}});
+$('refreshBtn').addEventListener('click',refreshDashboard);$('logoutBtn').addEventListener('click',logout);
+$('groupSearch').addEventListener('input',renderGroups);$('backBtn').addEventListener('click',()=>{$('groupPage').classList.add('hidden');$('dashboardPage').classList.remove('hidden')});
+['participantSearch','phoneSearch','govFilter'].forEach(id=>$(id).addEventListener('input',renderParticipants));
+$('allCustomBtn').addEventListener('click',()=>customDownload(''));$('groupCustomBtn').addEventListener('click',()=>customDownload(currentGroup));
+session=getSession();if(session){showApp();refreshDashboard().catch(e=>toast(e.message,true))}
+})();
+</script>
+</body>
+</html>
