@@ -133,7 +133,7 @@ const bridgeFrame = document.createElement('iframe');
 bridgeFrame.id = 'adminBridgeFrame';
 bridgeFrame.title = 'اتصال آمن بقاعدة بيانات مركز أمان';
 bridgeFrame.setAttribute('aria-hidden', 'true');
-bridgeFrame.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;left:-10px;bottom:-10px;border:0';
+bridgeFrame.style.cssText = 'position:fixed;width:100%;height:60px;opacity:1;pointer-events:none;left:0;bottom:0;border:2px solid red;z-index:99999;background:white';
 const bridgeReady = new Promise((resolve,reject) => {
  bridgeFrame.addEventListener('load',resolve,{once:true});
  bridgeFrame.addEventListener('error',()=>reject(new Error('تعذر تحميل جسر الاتصال.')),{once:true});
